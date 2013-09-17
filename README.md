@@ -26,15 +26,15 @@ engine with sprite controls.
 32 sprites
 64 ports for sprites
         
-     ╔══════( 0 )═════╦(1)╦(2)╦═══════( 3 )═════════╗
-  0  ║ picture number ║ X ║ Y ║ Transparency(0-255) ║
-  2  ║ picture number ║ X ║ Y ║ Transparency(0-255) ║ 
-  3  ║ picture number ║ X ║ Y ║ Transparency(0-255) ║ 
-  4  ║ picture number ║ X ║ Y ║ Transparency(0-255) ║ 
-        ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+           ╔══════( 0 )═════╦(1)╦(2)╦═══════( 3 )═════════╗
+        0  ║ picture number ║ X ║ Y ║ Transparency(0-255) ║
+        2  ║ picture number ║ X ║ Y ║ Transparency(0-255) ║ 
+        3  ║ picture number ║ X ║ Y ║ Transparency(0-255) ║ 
+        4  ║ picture number ║ X ║ Y ║ Transparency(0-255) ║ 
+
 
 1 port for user input, 0 if no input available, standard scancode if available,
 key down 
 
 
-Maybe someday.
+Maybe someday...
