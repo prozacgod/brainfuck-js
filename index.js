@@ -64,6 +64,19 @@ function code() {
         allocPtr += 1;
         return allocPtr - 1;
     }
+    
+    function seekBack(n) {
+        for (var i = 0; i < n; i++) {
+            addOp('<');
+        }
+    }
+
+    function seekAhead(n) {
+        for (var i = 0; i < n; i++) {
+            addOp('<');
+        }
+    }
+
 
     function releaseCell(ptr) {
         if (!(allocTable.indexOf(ptr) >= 0)) {
@@ -222,8 +235,77 @@ function code() {
     }
     
     function testZero(a) {
-        return function() {
+        return function(result) {
+            // must be zero'd!
+            var tmp = allocMany(3);
+            
+            dup(a, tmp);            
+            seek(tmp);
+
+            // Set tmp[1] true
+            addOp(">+");
+
+            //Verify true
+            addOp("<[>-]");
+
+            //seek nonzero location
+            addOp(">");
+
+            //find zero
+            addOp("[>]");
+            //return pointer to @tmp
+            addOp("<<<");
+            dup(tmp+1, result);
         }
+    }
+    
+    function dupMany(src, dest, count) {
+        var temp = allocCell();
+        doWhile(src, function() {
+            for (var i = 0; i < count; i++)
+                incAbsolute(dest + i);
+            incAbsolute(temp);
+        });
+        doWhile(temp, function() {
+            incAbsolute(src);
+        });
+    }
+    
+    function switchTest(addr, switches) {
+        var switch_arr = [];
+        var default_switch = switches["default"];
+        delete switches["default"];
+        var least_value = 100000;
+        for (var k in switches) {
+            var test_value = typeof(k) == "string" ? ord(k) : k;
+            if (typeof(test_value) != "number")
+                throw "bad switch type, single char or number only";
+                
+            switch_arr.push({value: test_value, func: switches[k]});
+            if (test_value < least_value)
+                least_value = test_value;
+        }
+
+        var least = allocCell(least_value);
+        var compare = allocMany(switch_arr.length + 1);
+        dupMany(addr, compare, switch_arr.length);
+        /*
+        doWhile(least, function() {
+            seek(compare);
+            for (var i = 0; i < switch_arr.length; i++) {
+                addOp("->");
+            }
+            seekBack(switch_arr.length);
+        });
+        console.log(least_value);
+        for (var i = 0; i < switch_arr.length; i++) {
+            var switch_test = switch_arr[i];
+            subConst(compare + i, switch_test.value-least_value);
+        }
+        
+        /*for (var k in switches) {
+            var cb = switches[k];
+        }*/       
     }
     
 
@@ -232,10 +314,21 @@ function code() {
     }
     
     //var flags = allocCell(); // flags
-    var input = allocCell(); // register a
+    var input = allocCell();
     var result = allocCell();
+    
     addComment('Get User input');
     readInput(input);        
+    addComment('Switch');
+    switchTest(input, {
+        "a": function() {
+        },
+        "b": function() {
+        },
+        "default": function() {
+        }
+    });
+    /*
     addComment('Test for A');
     conditionIfElse(testEqualConst(input, ord('a')), function() {
         addComment("It's an A");
@@ -249,13 +342,12 @@ function code() {
             addComment("It's something entirely different");
             setAbsolute(result, 100);
         });
-    });
+    });*/
 }
-
-console.log(ord('a'));
 
 code();
 console.log(bfCode);
+console.log("\n\n\n\n\n\n\n");
 
 
 // 25932134353700010
